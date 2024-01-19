@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Add your custom styles here */
+  </style>
+</head>
+<body>
+  <div id="weather-widget">
+    <h2>Weather Widget</h2>
+    <div id="weather-info"></div>
+  </div>
+
+  <script>
+    const apiKey = 'c27f2dc7bcc510ab03db7304802f7638';
+
+    function fetchWeather() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showWeather);
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    function showWeather(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const weatherInfo = document.getElementById('weather-info');
+          const cityName = data.name;
+          const temperature = data.main.temp;
+          const description = data.weather[0].description;
+
+          const content = `
+            <p>Location: ${cityName}</p>
+            <p>Temperature: ${temperature}°C</p>
+            <p>Description: ${description}</p>
+          `;
+
+          weatherInfo.innerHTML = content;
+        })
+        .catch(error => {
+          console.error('Error fetching weather data:', error);
+        });
+    }
+
+    // Fetch weather information and display on page load
+    fetchWeather();
+  </script>
+</body>
+</html>
